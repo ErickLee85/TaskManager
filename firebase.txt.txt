@@ -1,0 +1,42 @@
+function addDocumentToFirestore(task) {
+    return new Promise((resolve, reject) => {
+        firestore.collection("Tasks").add({
+            task: task,
+            uid: currentUser.uid // Assuming you have the current user's UID
+        })
+        .then(docRef => {
+            console.log("Document written with ID: ", docRef.id);
+            resolve(); // Resolve the promise once the document is added successfully
+        })
+        .catch(error => {
+            console.error("Error adding document: ", error);
+            reject(error); // Reject the promise if there's an error
+        });
+    });
+}
+
+// Define an array of tasks
+let taskArray = ["Task 1", "Task 2", "Task 3"];
+
+// Define a function to sequentially add documents to Firestore
+function addTasksSequentially() {
+    // Start with a resolved promise
+    let chain = Promise.resolve();
+
+    // Loop through each task in the array
+    taskArray.forEach(task => {
+        // Append each task to the chain
+        chain = chain.then(() => addDocumentToFirestore(task));
+    });
+
+    return chain;
+}
+
+// Call the function to add tasks sequentially
+addTasksSequentially()
+    .then(() => {
+        console.log("All tasks added successfully.");
+    })
+    .catch(error => {
+        console.error("Error adding tasks: ", error);
+    });

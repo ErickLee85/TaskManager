@@ -8,8 +8,11 @@
 <script src="https://kit.fontawesome.com/aec8d5c56a.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>-->
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
  <link rel="stylesheet" href="styles.css"> 
     <script src="./script.js"></script>
     <title>Task Management</title>
@@ -35,6 +38,7 @@
                 <h5 class="custom-header custom-bg-primary" >
                     TO DO
                 </h5>
+                
                 <!-- <div class="custom-list" id="todoList">
                 </div> -->
             </div>
@@ -94,7 +98,7 @@
             <button class="mainBtn" onclick="loginUser()"><span id="registerBtnText">Sign In</span>
                 <div class="custom-loader"></div></button>
             <div class="closeLoginBtn" id="closeLogin"><i class="fa-solid fa-xmark"></i></div>
-            <!-- <div id="registerText" style="margin-top: 10px; font-size: 0.8rem; cursor: pointer;" onclick="openRegister()">Click here to register...</div> -->
+            <div class="loginGoBack"><i class="fa-solid fa-angle-left" style="color: gainsboro;"></i></div>
         </div>
     </div>
 
@@ -111,12 +115,13 @@
               </div>
              <div>
                 <input type="checkbox" name="pw" id="showPassword">
-                <label style="margin-left: 5px;">Show Password</label>
+                <label style="margin-left: 5px;" for="showPassword">Show Password</label>
              </div>
             <button class="mainBtn" onclick="registerNewUser()"><span id="registerBtnText">Register</span>
                 <div class="custom-loader"></div>
             </button>
             <div class="closeRegisterBtn"><i class="fa-solid fa-xmark"></i></div>
+            <div class="registerGoBack"><i class="fa-solid fa-angle-left" style="color: gainsboro;"></i></div>
         </div>
     </div>
 
@@ -130,8 +135,15 @@
             <div class="closeOptionContainer"><i class="fa-solid fa-xmark"></i></div>
         </div>
     </div>
+    <div class="activityIndicator">
+      <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap:15px;">
+        <div class="custom-spinner">
+        </div>
+        <p style="color: white;">Saving Tasks...</p>
+      </div>
+    </div>
     <footer>
-        <p>Made with ❤️ by Desoto Bits & Bytes</p>
+        <p><a href="https://www.desotobitsandbytes.net" target="_blank">Coded with ❤️ by Desoto Bits & Bytes</a></p>
     </footer>
 </body>
 <script>
@@ -201,7 +213,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
   
@@ -222,6 +234,9 @@
     const analytics = getAnalytics(app);
     const auth = getAuth();
     const db = getFirestore(app);
+    let taskArray = [];
+    let retrievedTaskArray = []
+    const activityIndicator = document.querySelector('.activityIndicator');
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -260,7 +275,7 @@
 
     /////////////////////////////////////////////////////////////////////////////////////////
 
-    window.loginUser = function() {
+    window.loginUser = async function() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value
 
@@ -291,15 +306,55 @@
         text.style.display = 'none';
         loader.style.display = 'block'
         signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+        .then(async (userCredential) => {
             
             const user = userCredential.user;
+            //////////Retrieve Tasks from Firebase////////////////////
+
+            const q = query(collection(db, "Tasks"), where("uid", "==", user.uid));
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+            
+                const taskData = doc.data();
+                const parser = new DOMParser();
+                const taskElement = parser.parseFromString(taskData.task, 'text/html').body.firstChild;
+                taskElement.ondragend = dragEnd
+                taskElement.ondragstart = dragStart
+                const task = {
+                    status: taskData.status,
+                    task: taskElement
+                }
+                retrievedTaskArray.push(task);
+            });
+            if(retrievedTaskArray.length > 0) {
+                retrievedTaskArray.forEach((task) => {
+                    appendChildren(task)
+                })
+            }
+            
+             //////////Retrieve Tasks from Firebase////////////////////
              text.style.display = 'block';
             loader.style.display = 'none'
             document.querySelector('.loginContainerHolder').style.display = 'none';
             // document.querySelector('.userLoggedOut').style.display = 'none';
             // document.querySelector('.userLoggedIn').style.display = 'block';
-            Swal.fire(`Welcome ${user.email}!`);
+            Swal.fire({
+            title: `Welcome ${user.email}`,
+            showClass: {
+                popup: `
+                animate__animated
+                animate__fadeInUp
+                animate__faster
+                `
+            },
+            hideClass: {
+                popup: `
+                animate__animated
+                animate__fadeOutDown
+                animate__faster
+                `
+            }
+            });
             
         })
         .catch((error) => {
@@ -314,12 +369,40 @@
                     icon: "error",
                     title: "Authentication",
                     text: "Email or Password invalid.",
+                    showClass: {
+                    popup: `
+                    animate__animated
+                    animate__fadeInUp
+                    animate__faster
+                    `
+                },
+                hideClass: {
+                    popup: `
+                    animate__animated
+                    animate__fadeOutDown
+                    animate__faster
+                    `
+                }
                     });
             } else {
                 Swal.fire({
                 icon: "error",
                 title: "Oops...",
                 text: "Something went wrong!",
+                showClass: {
+                popup: `
+                animate__animated
+                animate__fadeInUp
+                animate__faster
+                `
+            },
+            hideClass: {
+                popup: `
+                animate__animated
+                animate__fadeOutDown
+                animate__faster
+                `
+            }
                 });
             }
         });
@@ -342,6 +425,20 @@
             title: "Send Password Reset Email?",
             showCancelButton: true,
             confirmButtonText: "Send It!",
+            showClass: {
+            popup: `
+            animate__animated
+            animate__fadeInUp
+            animate__faster
+            `
+        },
+        hideClass: {
+            popup: `
+            animate__animated
+            animate__fadeOutDown
+            animate__faster
+            `
+        }
             }).then((result) => {
             if (result.isConfirmed) {
                 sendPasswordResetEmail(auth, email)
@@ -362,14 +459,48 @@
 
 
     window.logOutUser = function() {
+        if(taskArray.length > 0) {
+            alert('Did you save your tasks?')
+        }
         signOut(auth).then(() => {
+            retrievedTaskArray = [];
+            const todoList = document.getElementById('todo');
+            while (todoList.firstChild) {
+                todoList.firstChild.remove();
+            }
+
+            const progress = document.getElementById('progress');
+            while (progress.firstChild) {
+                progress.firstChild.remove();
+            }
+
+            const completed = document.getElementById('completed');
+            while (completed.firstChild) {
+                completed.firstChild.remove();
+            }
             document.querySelector('.userLoggedOut').style.display = 'block';
             document.querySelector('.userLoggedIn').style.display = 'none';
-        Swal.fire('Signed Out!')
-        }).catch((error) => {
-        // An error happened.
-        });
-    }
+            Swal.fire({
+            title: `Logged Out!`,
+            showClass: {
+                popup: `
+                animate__animated
+                animate__fadeInUp
+                animate__faster
+                `
+            },
+            hideClass: {
+                popup: `
+                animate__animated
+                animate__fadeOutDown
+                animate__faster
+                `
+            }
+            });
+            }).catch((error) => {
+            // An error happened.
+            });
+        }
 
     window.registerNewUser = function() {
         const email = document.getElementById('emailReg').value;
@@ -391,10 +522,37 @@
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "Email badly formatted."
+                text: "Email badly formatted.",
+                            showClass: {
+                popup: `
+                animate__animated
+                animate__fadeInUp
+                animate__faster
+                `
+            },
+            hideClass: {
+                popup: `
+                animate__animated
+                animate__fadeOutDown
+                animate__faster
+                `
+            }
                 });
             return;
         }
+
+        if(password.length < 8) {
+            Swal.fire("Password must be atleast 8 characters");
+            document.getElementById('passwordReg').focus();
+            document.getElementById('passwordReg').style.border = '1px solid red';
+        }
+
+        if(password.length >= 8) {
+            document.getElementById('passwordReg').style.border = '';
+
+        }
+
+
 
         const text = document.getElementById('registerBtnText');
         const loader = document.querySelector('.custom-loader');
@@ -406,7 +564,24 @@
             const user = userCredential.user;
             loader.style.display = 'none'
             text.style.display = 'block'
-            alert(`You are signed up ${user.email} and logged in!`);
+            Swal.fire({
+            title: `You are signed up ${user.email} and logged in!`,
+            showClass: {
+                popup: `
+                animate__animated
+                animate__fadeInUp
+                animate__faster
+                `
+            },
+            hideClass: {
+                popup: `
+                animate__animated
+                animate__fadeOutDown
+                animate__faster
+                `
+            }
+            });
+          
         })
         .catch((error) => {
              loader.style.display = 'none'
@@ -491,17 +666,20 @@ window.drop = function(event) {
             dragObject.classList.remove("custom-border-primary", "custom-border-success");
             dragObject.classList.add("custom-border-warning");
             dragObject.querySelector('.custom-card-progress-time').innerHTML = `<div class="progress-color">In Progress:</div> ${currentTime}`;
+            dragObject.setAttribute('data-task-progress-time', `In Progress: ${currentTime}`)
         } else if (dropTarget.id === "completed") {
             dragObject.classList.remove("custom-border-warning", "custom-border-primary");
             dragObject.classList.add("custom-border-success");
             dragObject.querySelector('.custom-card-completed-time').innerHTML = `<div class="complete-color">Completed:</div> ${currentTime}`;
+            dragObject.setAttribute('data-task-completed-time', `Completed: ${currentTime}`)
+
         }
-
-
-    retrieveDataFromLists()
-   
 };
 
+
+window.appendChildren = function ({status, task}) {
+   document.getElementById(status).appendChild(task)
+}
 
 
 
@@ -522,18 +700,37 @@ window.addTask = function() {
     document.getElementById("todo").appendChild(newTask);
     taskInput.value = "";
     taskDescription.value = "";
-    retrieveDataFromLists()
 };
 
 window.removeTask = function(task) {
-    if(window.confirm('Are you sure you want to delete this task?')) {
+    Swal.fire({
+    title: "Delete Task?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+            showClass: {
+            popup: `
+            animate__animated
+            animate__fadeInUp
+            animate__faster
+            `
+        },
+        hideClass: {
+            popup: `
+            animate__animated
+            animate__fadeOutDown
+            animate__faster
+            `
+        }
+    }).then((result) => {
+    if (result.isConfirmed) {
         const taskToRemove = document.getElementById(task)
-        // task.remove();
         taskToRemove.remove();
-        retrieveDataFromLists();
-    } else {
-        return;
+       return;
     }
+    });
 };
 
 
@@ -563,7 +760,7 @@ window.createTaskElement = function(taskText, description) {
             <div class="custom-card-text custom-card-title">${taskText}</div>
             <div class="custom-card-description">${description}</div>
             <div class="custom-card-description task-update"></div>
-            <button class="custom-btn-delete" onclick="removeTask('${taskId}')">Delete</button>
+            <button class="custom-btn-delete" onclick="removeTask('${taskId}')">Remove</button>
         </div>
     `;
     
@@ -572,41 +769,107 @@ window.createTaskElement = function(taskText, description) {
 
 
 window.saveUserTasks = async function () {
-    alert('Tasks Saved!')
+    retrieveDataFromLists();
 }
 
 
-window.retrieveDataFromLists = function() {
+window.addTasksToFirestore = async function(task, status) {
+    activityIndicator.style.display = 'grid';
+    const taskString = task.outerHTML; //convert HTML to string to store in firebase
+    try {
+        await setDoc(doc(db, "Tasks", task.id), {
+            task: taskString,
+            uid: auth.currentUser.uid,
+            status: status
+        });
+        console.log("Task added successfully:", task.id);
+    } catch (error) {
+        console.error("Error adding task:", error);
+        throw error; // Propagate the error to the caller
+    }
+};
+
+window.retrieveDataFromLists = async function() {
     const todoList = document.getElementById('todo');
     const progressList = document.getElementById('progress');
     const completedList = document.getElementById('completed');
-    
+    let chain = Promise.resolve();
+
     // Function to retrieve task data attributes from a list container
     function retrieveTaskDataFromList(list) {
-       
-        // const children = list.children;
-        const children = Array.from(list.children).filter(child => child.tagName.toLowerCase() !== 'h5');
-        if(children.length > 0) {
-            console.log(list.id)
-            for(let i = 0; i < children.length; i++) {
-            const string = children[i]
-            console.log(string)
-        }
-        }
-      
-
-        // return children;
+        return new Promise((resolve, reject) => {
+            const children = Array.from(list.children).filter(child => child.tagName.toLowerCase() !== 'h5');
+            if (children.length > 0) {
+                console.log(list.id);
+                const taskPromises = children.map(child => addTasksToFirestore(child, list.id));
+                Promise.all(taskPromises)
+                    .then(() => {
+                        resolve()
+                        activityIndicator.style.display = 'none'
+                        Swal.fire({
+                        icon: "success",
+                        title: "Tasks Saved.",
+                        showConfirmButton: false,
+                        timer: 1500,
+                        showClass: {
+                        popup: `
+                        animate__animated
+                        animate__fadeInUp
+                        animate__faster
+                        `
+                    },
+                    hideClass: {
+                        popup: `
+                        animate__animated
+                        animate__fadeOutDown
+                        animate__faster
+                        `
+                    }
+                        });
+                    })
+                    .catch(error => {
+                        reject(error)
+                        activityIndicator.style.display = 'none'
+                        Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Something went wrong!",
+                        showClass: {
+                        popup: `
+                        animate__animated
+                        animate__fadeInUp
+                        animate__faster
+                        `
+                    },
+                    hideClass: {
+                        popup: `
+                        animate__animated
+                        animate__fadeOutDown
+                        animate__faster
+                        `
+                    }
+                       
+                        });
+                    });
+            } else {
+                resolve(); 
+            }
+        });
     }
 
-    const todoTasks = retrieveTaskDataFromList(todoList);
-    const progressTasks = retrieveTaskDataFromList(progressList);
-    const completedTasks = retrieveTaskDataFromList(completedList);
-
-    // console.log('Todo Tasks:', todoTasks);
-    // console.log('Progress Tasks:', progressTasks);
-    // console.log('Completed Tasks:', completedTasks);
-
+    try {
+        await Promise.all([
+            retrieveTaskDataFromList(todoList),
+            retrieveTaskDataFromList(progressList),
+            retrieveTaskDataFromList(completedList)
+        ]);
+        console.log("All tasks added successfully.");
+    } catch (error) {
+        console.error("Error adding tasks:", error);
+        throw error; // Propagate the error to the caller
+    }
 };
+
 
 
 
@@ -652,6 +915,16 @@ document.querySelector('.floppyDisk').addEventListener('click', (event) => {
     setTimeout(() => {
     element.style.transform = 'rotate(0deg)';
     }, 300);
+})
+
+document.querySelector('.loginGoBack').addEventListener('click', () => {
+    document.querySelector('.loginContainerHolder').style.display = 'none';
+    document.querySelector('.authOptionContainer').style.display = 'grid'
+})
+
+document.querySelector('.registerGoBack').addEventListener('click', () => {
+    document.querySelector('.registerContainerHolder').style.display = 'none';
+    document.querySelector('.authOptionContainer').style.display = 'grid'
 })
 
   </script>
