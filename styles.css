@@ -315,12 +315,16 @@ i {
 .custom-col {
     position: relative;
     width: 100%;
-    max-width: 25%;
+    max-height: 100vh;
+    max-width: 30%;
     box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
     background-color: #f8f9fa;
     margin: 0 0.5rem;
     padding-top: 100px;
     padding-inline:10px;
+    overflow: scroll;
+    scrollbar-width:thin;
+
 }
 
 /* Header */
@@ -427,7 +431,7 @@ i {
 .custom-card-title {
     font-weight: 500; /* fw-semibold equivalent */
     font-style: italic;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .custom-card-description {

@@ -27,7 +27,7 @@
             <div onclick="logOutUser()" class="userLoggedIn"><p style="color: white; margin-right: 10px; font-weight: 800;">Log Out</p></div>
         </div>
     </nav>
-    <div onclick="saveUserTasks()" class="floppyDisk"><img src="./icons8-save-48.png" alt="save" title="Save your Tasks"></div>
+    <!-- <div onclick="saveUserTasks()" class="floppyDisk"><img src="./icons8-save-48.png" alt="save" title="Save your Tasks"></div> -->
 
     <div style="margin:25px auto; text-align: center; font-size: 1.25rem;">Drag & Drop</div>
        
@@ -213,7 +213,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
   
@@ -240,13 +240,13 @@
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            document.querySelector('.floppyDisk').style.display = 'block';
+            // document.querySelector('.floppyDisk').style.display = 'block';
             document.querySelector('.userLoggedIn').style.display = 'block';
             document.querySelector('.userLoggedOut').style.display = 'none';
         } else {
             document.querySelector('.userLoggedOut').style.display = 'block';
             document.querySelector('.userLoggedIn').style.display = 'none';
-            document.querySelector('.floppyDisk').style.display = 'none';
+            // document.querySelector('.floppyDisk').style.display = 'none';
 
         }
     });
@@ -458,26 +458,27 @@
 
 
 
-    window.logOutUser = function() {
-        if(taskArray.length > 0) {
-            alert('Did you save your tasks?')
-        }
+    window.logOutUser = async function() {
+
+        await retrieveDataFromLists();
+        
         signOut(auth).then(() => {
             retrievedTaskArray = [];
-            const todoList = document.getElementById('todo');
-            while (todoList.firstChild) {
-                todoList.firstChild.remove();
-            }
+            function clearListExceptH5(list) {
+            const children = Array.from(list.children).filter(child => child.tagName.toLowerCase() !== 'h5');
+            children.forEach(child => {
+                list.removeChild(child);
+            });
+        }
 
-            const progress = document.getElementById('progress');
-            while (progress.firstChild) {
-                progress.firstChild.remove();
-            }
+        const todoList = document.getElementById('todo');
+        clearListExceptH5(todoList);
 
-            const completed = document.getElementById('completed');
-            while (completed.firstChild) {
-                completed.firstChild.remove();
-            }
+        const progress = document.getElementById('progress');
+        clearListExceptH5(progress);
+
+        const completed = document.getElementById('completed');
+        clearListExceptH5(completed);
             document.querySelector('.userLoggedOut').style.display = 'block';
             document.querySelector('.userLoggedIn').style.display = 'none';
             Swal.fire({
@@ -724,11 +725,15 @@ window.removeTask = function(task) {
             animate__faster
             `
         }
-    }).then((result) => {
+    }).then(async (result) => {
     if (result.isConfirmed) {
         const taskToRemove = document.getElementById(task)
         taskToRemove.remove();
+        if(auth.currentUser) {
+            await deleteDoc(doc(db, "Tasks", task));
+        }
        return;
+    } else {
     }
     });
 };
@@ -909,13 +914,13 @@ document.querySelectorAll('.custom-header').forEach(header => {
     });
 });
 
-document.querySelector('.floppyDisk').addEventListener('click', (event) => {
-    const element = event.target;
-    element.style.transform = 'rotate(10deg)';
-    setTimeout(() => {
-    element.style.transform = 'rotate(0deg)';
-    }, 300);
-})
+// document.querySelector('.floppyDisk').addEventListener('click', (event) => {
+//     const element = event.target;
+//     element.style.transform = 'rotate(10deg)';
+//     setTimeout(() => {
+//     element.style.transform = 'rotate(0deg)';
+//     }, 300);
+// })
 
 document.querySelector('.loginGoBack').addEventListener('click', () => {
     document.querySelector('.loginContainerHolder').style.display = 'none';
