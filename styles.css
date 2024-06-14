@@ -322,7 +322,7 @@ i {
     margin: 0 0.5rem;
     padding-top: 100px;
     padding-inline:10px;
-    overflow: scroll;
+    overflow-y: scroll;
     scrollbar-width:thin;
 
 }
@@ -353,7 +353,7 @@ i {
     background-color: #ffdd76;
 }
 .custom-bg-success {
-    background-color: #57ff7e;
+    background-color: #7bf798;
 }
 
 .todo-color {
@@ -451,28 +451,27 @@ i {
 }
 
 .custom-btn-delete {
-    background-color: #dc3545; /* btn-danger equivalent */
-    border: 1px solid #dc3545;
-    color: white;
-    font-size: .875rem; /* btn-sm equivalent */
-    margin-top: .5rem; /* mt-2 equivalent */
-    padding: .375rem .75rem;
+    background: transparent;
+    border: none;
+    position: absolute;
+    bottom:10px;
+    right:10px;
+}
+
+.custom-btn-delete i{
+    color: #dfdfdf;
+    font-size: 1.3rem;
     outline: none;
+    border: none;
     cursor: pointer;
-    border-radius: .25rem;
     transition: 300ms ease-in-out;
 }
 
-.custom-btn-delete .fa {
-    transition: 300ms ease-in-out;
-}
 
-.custom-btn-delete .fa:hover {
-    color: #dc3545;
-}
 
-.custom-btn-delete:hover {
-    background-color: transparent;
+.custom-btn-delete:hover i {
+    border: none;
+    outline: none;
     color: #dc3545;
 }
 
