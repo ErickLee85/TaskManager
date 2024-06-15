@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A 100% free task manager application. Zero Ads. Manage your to do, in progress and completed items. ">
+    <meta name="keywords" content="Task Manager, Free Task Manager, Task, To Do list">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script src="https://kit.fontawesome.com/aec8d5c56a.js" crossorigin="anonymous"></script>
@@ -33,7 +35,9 @@
                   <li onclick="authOption()" class="userLoggedOut underline-hover-effect">Log In </li>
                   <li onclick="logOutUser()" class="userLoggedIn underline-hover-effect">Log Out</li>
                   <li onclick="userSavingTasks()" class="userLoggedIn underline-hover-effect">Save Tasks</li>
-                  <li id="about" onclick="goToAbout()" class="underline-hover-effect">About</li>
+                  <li onclick="goToAbout()" class=" underline-hover-effect" >About</li>
+                  <li onclick="removeAccount()" class="userLoggedIn underline-hover-effect">Remove Act</li>
+
                 </ul>
               </div>
         </div>
@@ -56,6 +60,7 @@
                 <h5 class="custom-header custom-bg-primary" >
                     TO DO
                 </h5>
+                
                 
                 <!-- <div class="custom-list" id="todoList">
                 </div> -->
@@ -170,14 +175,28 @@
             <p style="color: white;">Registering...</p>
           </div>
     </div>
+    <div class="deletingUser">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap:15px;">
+            <div class="custom-spinner">
+            </div>
+            <p style="color: white;">Removing Account..</p>
+          </div>
+    </div>
 
 
     <footer id="footer">
-        <div class="version">Version 1.0.0</div>
+        <div class="version">
+            <div >
+                <p style="font-size: 0.5rem;">Version 1.0.0</p>
+                           
+            </div>
+        </div>
 
         
         <div>
-            <p>This app is a fun project I was working on and I thought it was worth sharing. I'll be adding more features also. This service is free for <strong>life</strong>.  If you find value in this application, you can leave me a tip.</p>
+            <p>This app is a fun project I was working on and I thought it was worth sharing. I'll be adding more features also. This service is free for <strong>life</strong>.  If you find value in this application, you can leave a tip.
+            <br>Request new features or report a bug:<span style="font-size: 0.7rem; text-decoration: underline; text-underline-offset: 3px;"> <a href="mailto:support@simpletaskmgr.com">support@simpletaskmgr.com</a></span></p>
+            
             <a id="venmoCode" href="https://account.venmo.com/u/desotobitsandbytes" target="_blank"><img src="./venmo.png" height="200" width="200" alt="venmo"></a>
         </div>
                 <p style="text-align: center; padding: 25px;"><a href="https://www.desotobitsandbytes.net" target="_blank">Coded with ❤️ by Desoto Bits & Bytes</a></p>
@@ -284,22 +303,12 @@
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, deleteDoc,  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+ 
   
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-      apiKey: "AIzaSyCRZ4XD6HZ1cbcNIAzvIo0UZC-YwFCB6mI",
-      authDomain: "task-management-d03dd.firebaseapp.com",                          
-      projectId: "task-management-d03dd",
-      storageBucket: "task-management-d03dd.appspot.com",
-      messagingSenderId: "1027467001953",
-      appId: "1:1027467001953:web:a0dd23e02502336fbf6a20",
-      measurementId: "G-3D51S1ZK5C"
-    };
+  
+  function _0x3f60(_0x1606d1,_0xb9018b){const _0x3db6b3=_0x21e5();return _0x3f60=function(_0x2bd123,_0x8cd2b4){_0x2bd123=_0x2bd123-(0x1b94+-0x6fb*-0x2+-0x1471*0x2);let _0x52d4c3=_0x3db6b3[_0x2bd123];return _0x52d4c3;},_0x3f60(_0x1606d1,_0xb9018b);}function _0x21e5(){const _0x54ff1a=['XD6HZ1cbcN','d.appspot.','81654ZaONDE','IAzvIo0UZC','app.com','4200910JdIxdX','427CjJKPF','535816oByHnb','13814124YdidRd','G-3D51S1ZK','d.firebase','-YwFCB6mI','ement-d03d','com','99acyKxN','139593alygxT','12HevGHJ','458980BynhOH','953','616feEPKt','task-manag','02336fbf6a','01953:web:','AIzaSyCRZ4','1:10274670','18grBuuD','14745BRLpvb','1027467001','a0dd23e025'];_0x21e5=function(){return _0x54ff1a;};return _0x21e5();}const _0x4d9ddc=_0x3f60;(function(_0x1c2578,_0x4b31b9){const _0x3a76ac=_0x3f60,_0x30ac67=_0x1c2578();while(!![]){try{const _0x5f4fef=parseInt(_0x3a76ac(0xaa))/(0xb99+0x22dd+-0x2e75*0x1)*(-parseInt(_0x3a76ac(0xab))/(-0x3fd*0x1+-0x7a0+0x1a9*0x7))+-parseInt(_0x3a76ac(0xb5))/(-0x125b+0x1d04+0x5e*-0x1d)*(-parseInt(_0x3a76ac(0xae))/(0x14cb+0x11c3+-0x268a*0x1))+-parseInt(_0x3a76ac(0xbd))/(-0x8c8+0xb4d*-0x2+0x1f67)+-parseInt(_0x3a76ac(0xba))/(0x15f1+-0x16ab+0xc0)*(-parseInt(_0x3a76ac(0xbe))/(-0x147+-0x3*-0x7f+-0x2f*0x1))+-parseInt(_0x3a76ac(0xbf))/(-0x7*0x109+-0x295*0x9+0x22e*0xe)*(parseInt(_0x3a76ac(0xb4))/(-0x3*0x367+-0x124b+-0x1c89*-0x1))+parseInt(_0x3a76ac(0xac))/(-0x2401+0x1c4+0xc3*0x2d)*(-parseInt(_0x3a76ac(0xa9))/(-0x1*-0x15f1+0x8b*-0x3b+0xa23))+parseInt(_0x3a76ac(0xc0))/(-0xa8c+-0xed*0x2+0xc72);if(_0x5f4fef===_0x4b31b9)break;else _0x30ac67['push'](_0x30ac67['shift']());}catch(_0x5dd5f7){_0x30ac67['push'](_0x30ac67['shift']());}}}(_0x21e5,-0x35b*0x2cd+-0x78e5f*0x1+-0x1*-0x18c9f2));const firebaseConfig={'apiKey':_0x4d9ddc(0xb2)+_0x4d9ddc(0xb8)+_0x4d9ddc(0xbb)+_0x4d9ddc(0xc3),'authDomain':_0x4d9ddc(0xaf)+_0x4d9ddc(0xc4)+_0x4d9ddc(0xc2)+_0x4d9ddc(0xbc),'projectId':_0x4d9ddc(0xaf)+_0x4d9ddc(0xc4)+'d','storageBucket':_0x4d9ddc(0xaf)+_0x4d9ddc(0xc4)+_0x4d9ddc(0xb9)+_0x4d9ddc(0xa8),'messagingSenderId':_0x4d9ddc(0xb6)+_0x4d9ddc(0xad),'appId':_0x4d9ddc(0xb3)+_0x4d9ddc(0xb1)+_0x4d9ddc(0xb7)+_0x4d9ddc(0xb0)+'20','measurementId':_0x4d9ddc(0xc1)+'5C'};
   
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -387,6 +396,115 @@
 
 
     /////////////////////////////////////////////////////////////////////////////////////////
+
+    // window.deleteUserTasks = async function (task) {
+    //     await deleteDoc(doc(db, "Tasks", task));
+    // }
+
+    window.deleteTasks = async function (task_id) {
+        try {
+            const docRef = doc(db, 'Tasks', task_id);
+            await deleteDoc(docRef);
+            console.log(`Deleted`);
+        } catch (error) {
+            console.error(`Failed to delete`, error);
+        }
+    }
+
+
+    window.removeAccount = async function () {
+        Swal.fire({
+        title: "Remove Account",
+        text: "All tasks data will be lost.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Remove Account",
+        showClass: {
+            popup: `
+            animate__animated
+            animate__fadeInUp
+            animate__faster
+            `
+        },
+        hideClass: {
+            popup: `
+            animate__animated
+            animate__fadeOutDown
+            animate__faster
+            `
+        }
+        }).then(async (result) => {
+        if (result.isConfirmed) {
+            document.querySelector('.deletingUser').style.display = 'grid'
+            const user = auth.currentUser;
+            try {
+                const Query = query(collection(db, 'Tasks'),
+                                            where('uid', '==', user.uid ));
+                const querySnapshot = await getDocs(Query);
+                const TasksArray = [];
+            
+                querySnapshot.forEach(doc => {
+                TasksArray.push({ ...doc.data(), id: doc.id });
+                });
+
+                if(TasksArray.length > 0) {
+                await Promise.all(TasksArray.map(async (item) => {
+                await deleteTasks(item.id);
+                }));
+                console.log('All tasks deleted');
+                } else {
+                return;
+                }
+                } catch (error) {
+                    console.error('Failed to get or delete tasks', error);
+                    document.querySelector('.deletingUser').style.display = 'none'
+                }
+                await deleteUser(auth.currentUser)
+                .then(() => {
+                    function clearListExceptH5(list) {
+                    const children = Array.from(list.children).filter(child => child.tagName.toLowerCase() !== 'h5');
+                    children.forEach(child => {
+                        list.removeChild(child);
+                    });
+                }
+
+                const todoList = document.getElementById('todo');
+                clearListExceptH5(todoList);
+
+                const progress = document.getElementById('progress');
+                clearListExceptH5(progress);
+
+                const completed = document.getElementById('completed');
+                clearListExceptH5(completed);
+                document.querySelector('.deletingUser').style.display = 'none'
+                Swal.fire({
+                    title: "Success",
+                    text: "Account Removed.",
+                    icon: "success",
+                    showClass: {
+                    popup: `
+                    animate__animated
+                    animate__fadeInUp
+                    animate__faster
+                    `
+                },
+                hideClass: {
+                    popup: `
+                    animate__animated
+                    animate__fadeOutDown
+                    animate__faster
+                    `
+                }
+                    });
+                    })
+                
+                } else {
+                    return;
+                }
+                });
+    }
 
     window.loginUser = async function() {
         const email = document.getElementById('email').value;
@@ -593,9 +711,16 @@
 
         
 
-        // await retrieveDataFromLists();
-        
-        signOut(auth).then(() => {
+        Swal.fire({
+        title: "Before you go, did you save your tasks?",
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Yes I did",
+        denyButtonText: `Oops, I forgot`
+        }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            signOut(auth).then(() => {
             retrievedTaskArray = [];
             function clearListExceptH5(list) {
             const children = Array.from(list.children).filter(child => child.tagName.toLowerCase() !== 'h5');
@@ -604,17 +729,18 @@
             });
         }
 
-        const todoList = document.getElementById('todo');
-        clearListExceptH5(todoList);
+            const todoList = document.getElementById('todo');
+            clearListExceptH5(todoList);
 
-        const progress = document.getElementById('progress');
-        clearListExceptH5(progress);
+            const progress = document.getElementById('progress');
+            clearListExceptH5(progress);
 
-        const completed = document.getElementById('completed');
-        clearListExceptH5(completed);
-            document.querySelector('.userLoggedOut').style.display = 'block';
-            document.querySelector('.userLoggedIn').style.display = 'none';
-            Swal.fire({
+            const completed = document.getElementById('completed');
+            clearListExceptH5(completed);
+                document.querySelector('.userLoggedOut').style.display = 'block';
+                document.querySelector('.userLoggedIn').style.display = 'none';
+                Swal.fire({
+            position:'top-end',
             title: `Logged Out!`,
             showClass: {
                 popup: `
@@ -631,10 +757,60 @@
                 `
             }
             });
-            }).catch((error) => {
-            // An error happened.
+        
+                }).catch((error) => {
+                    console.log(error)
+                });
+
+          
+        } else if (result.isDenied) {
+            await retrieveDataFromLists()
+            signOut(auth).then(() => {
+            retrievedTaskArray = [];
+            function clearListExceptH5(list) {
+            const children = Array.from(list.children).filter(child => child.tagName.toLowerCase() !== 'h5');
+            children.forEach(child => {
+                list.removeChild(child);
             });
         }
+
+            const todoList = document.getElementById('todo');
+            clearListExceptH5(todoList);
+
+            const progress = document.getElementById('progress');
+            clearListExceptH5(progress);
+
+            const completed = document.getElementById('completed');
+            clearListExceptH5(completed);
+                document.querySelector('.userLoggedOut').style.display = 'block';
+                document.querySelector('.userLoggedIn').style.display = 'none';
+                Swal.fire({
+                    position: "top-end",
+                    title: `Tasks Saved and Logged Out.`,
+                    showClass: {
+                        popup: `
+                        animate__animated
+                        animate__fadeInUp
+                        animate__faster
+                        `
+                    },
+                    hideClass: {
+                        popup: `
+                        animate__animated
+                        animate__fadeOutDown
+                        animate__faster
+                        `
+                    }
+                    });
+                
+                        }).catch((error) => {
+                            console.log(error)
+                        });
+                }
+                });
+                
+            
+                }
 
     window.registerNewUser = function() {
         const email = document.getElementById('emailReg').value;
@@ -741,12 +917,15 @@ window.dragStart = function(event) {
     const id = event.dataTransfer.getData("Text");
     const dragObject = document.getElementById(id);
     dragObject.style.opacity = 0.5;
+    dragObject.style.transform = 'rotate(5deg)';
 };
 
 window.dragEnd = function(event) {
     event.preventDefault();
     const id = event.target.id;
     document.getElementById(id).style.opacity = 1;
+    document.getElementById(id).style.transform = 'rotate(0deg)';
+
 };
 
 window.allowDrop = function(event) {
@@ -806,6 +985,7 @@ window.drop = function(event) {
             dragObject.classList.remove("custom-border-primary", "custom-border-success");
             dragObject.classList.add("custom-border-warning");
             dragObject.querySelector('.custom-card-progress-time').innerHTML = `<div class="progress-color">In Progress:</div> ${currentTime}`;
+            dragObject.querySelector('.custom-card-completed-time').innerHTML = '';
             dragObject.setAttribute('data-task-progress-time', `In Progress: ${currentTime}`)
         } else if (dropTarget.id === "completed") {
             dragObject.classList.remove("custom-border-warning", "custom-border-primary");
@@ -847,7 +1027,7 @@ window.removeTask = function(task) {
     let newTask = document.getElementById(task);
     let title = newTask.getAttribute('data-task-text')
     Swal.fire({
-    title: `Delete ${title} task?`,
+    title: `Delete ${title}?`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",

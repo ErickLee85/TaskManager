@@ -21,8 +21,9 @@ button {
     padding-block: 5px;
     padding-inline:15px;
     border: none;
-    border: 1px solid rgb(94, 12, 201);
-    background: rgb(117, 58, 196);
+    background: linear-gradient(to right, rgb(97, 9, 240) 0%, rgb(97, 9, 240) 50%, rgb(72, 25, 126) 50%, rgb(72, 25, 126) 100%);
+    background-size: 200% 100%;
+    transition: background-position 0.3s;
     color: white;
     font-size: 0.9rem;
     font-weight: 600;
@@ -32,6 +33,11 @@ button {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.mainBtn:hover {
+    background-position: -100% 0;
+
 }
 
 
@@ -423,6 +429,7 @@ i {
     width: 100%;
     margin-bottom: 1rem;
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); /* Shadow-sm equivalent */
+    transition: transform 200ms ease-in-out;
 }
 
 .custom-card-body {
@@ -526,9 +533,11 @@ footer {
 
 .version {
     position: absolute;
-    top:0px;
-    left:-100px;
-    font-size: 0.7rem;
+    bottom:0px;
+    left:-125px;
+    font-size: 0.5rem;
+    display: grid;
+    place-items: center;
 }
 
 footer > div {
@@ -571,7 +580,7 @@ label {
     background: rgba(0,0,0,0.5);
 }
 
-.registering {
+.registering, .deletingUser {
     display: none;
     place-items: center;
     inset: 0;
@@ -600,24 +609,37 @@ label {
   }
   
   .menu__btn {
-    cursor: pointer;
+    /* cursor: pointer;
     background: linear-gradient(to bottom, rgb(97, 9, 240) 0%, rgb(72, 25, 126));
     color: rgb(255, 255, 255);
     border: none;
     padding: 10px 20px;
     border-radius: 4px;
     font-weight: 600;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); */
+    background: linear-gradient(to right, rgb(97, 9, 240) 0%, rgb(97, 9, 240) 50%, rgb(72, 25, 126) 50%, rgb(72, 25, 126) 100%);
+    background-size: 200% 100%;
+    transition: background-position 0.3s;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .menu__btn:hover {
+    background-position: -100% 0;
   }
   
   .menu__list {
     position: absolute;
-    top: 50%;
+    top: 75%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0);
     transform-origin: center center;
     z-index: 999;
-    padding: 10px;
+    padding-inline: 20px;
+    padding-block:20px;
     margin: 0;
     list-style: none;
     background: linear-gradient(to bottom, rgb(97, 9, 240) 0%, rgb(72, 25, 126));
@@ -625,10 +647,11 @@ label {
     opacity: 0;
     transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
     border-radius: 5px;
-    min-width: 125px;
+    min-width: 150px;
     min-height: 150px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
   }
   
@@ -641,6 +664,7 @@ label {
     opacity: 0;
     font-size: 0.8rem;
     color: white;
+    display: flex;
   }
 
   
@@ -681,8 +705,8 @@ label {
     display: flex;
     justify-content: space-evenly;
     flex-direction: row;
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 500;
+    font-size: 0.8rem;
   }
 
 
