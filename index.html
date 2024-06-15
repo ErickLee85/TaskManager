@@ -142,6 +142,13 @@
         <p style="color: white;">Saving Tasks...</p>
       </div>
     </div>
+    <div class="registering">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap:15px;">
+            <div class="custom-spinner">
+            </div>
+            <p style="color: white;">Registering...</p>
+          </div>
+    </div>
     <footer>
         <p><a href="https://www.desotobitsandbytes.net" target="_blank">Coded with ❤️ by Desoto Bits & Bytes</a></p>
     </footer>
@@ -557,16 +564,17 @@
 
         const text = document.getElementById('registerBtnText');
         const loader = document.querySelector('.custom-loader');
-        text.style.display = 'none';
-        loader.style.display = 'block'
+        document.querySelector('.registering').style.display = 'grid'
+        document.querySelector('.mainBtn').setAttribute('disabled', true)
         createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             // Signed up 
             const user = userCredential.user;
-            loader.style.display = 'none'
-            text.style.display = 'block'
+            document.querySelector('.registerContainerHolder').style.display = 'none';
+            document.querySelector('.mainBtn').removeAttribute('disabled')
+            document.querySelector('.registering').style.display = 'none'
             Swal.fire({
-            title: `You are signed up ${user.email} and logged in!`,
+            title: `You are signed up ${user.email} and logged in, get started by adding a new task.`,
             showClass: {
                 popup: `
                 animate__animated
@@ -585,10 +593,15 @@
           
         })
         .catch((error) => {
-             loader.style.display = 'none'
-            text.style.display = 'block'
+            document.querySelector('.mainBtn').removeAttribute('disabled')
+            document.querySelector('.registering').style.display = 'none'
             const errorCode = error.code;
             const errorMessage = error.message;
+            Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            });
            
         });
         
