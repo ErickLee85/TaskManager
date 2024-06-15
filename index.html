@@ -9,6 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
 <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
@@ -23,13 +24,30 @@
         <div><img src="./task_mgr.png" alt="task logo"></div>
         <div>
             <div id="task-button"><p onclick="showTaskModal()">New Task </div>
-            <div onclick="authOption()" class="userLoggedOut" style="margin-right: 10px;"><i class="fa-solid fa-user" style="color: white; font-size:1rem;"></i></div>
-            <div onclick="logOutUser()" class="userLoggedIn"><p style="color: white; margin-right: 10px; font-weight: 800;">Log Out</p></div>
+            <!-- <div onclick="authOption()" class="userLoggedOut" style="margin-right: 10px;"><i class="fa-solid fa-user" style="color: white; font-size:1rem;"></i></div>
+            <div onclick="logOutUser()" class="userLoggedIn"><p style="color: white; margin-right: 10px; font-weight: 800;">Log Out</p></div> -->
+            <div class="menu">
+                <button class="menu__btn" onclick="toggleMenu()">Menu</button>
+                <ul class="menu__list">
+                  <li class="userLoggedOut underline-hover-effect" onclick="openRegisterModal()">Sign Up</li>
+                  <li onclick="authOption()" class="userLoggedOut underline-hover-effect">Log In </li>
+                  <li onclick="logOutUser()" class="userLoggedIn underline-hover-effect">Log Out</li>
+                  <li onclick="userSavingTasks()" class="userLoggedIn underline-hover-effect">Save Tasks</li>
+                  <li id="about" onclick="goToAbout()" class="underline-hover-effect">About</li>
+                </ul>
+              </div>
         </div>
+      
+        <div class="desktop" onclick="desktopApp()">
+            <p><i class="fa-solid fa-desktop" style="margin-right: 10px; font-size: 0.8rem;"></i> Application</p>
+        </div>
+      
     </nav>
     <!-- <div onclick="saveUserTasks()" class="floppyDisk"><img src="./icons8-save-48.png" alt="save" title="Save your Tasks"></div> -->
 
-    <div style="margin:25px auto; text-align: center; font-size: 1.25rem;">Drag & Drop</div>
+    <!-- <div class="dragDrop">Drag & Drop
+        <lottie-player src="./lottie_drag_and_drop.json" background="transparent"  speed="1"  style="width: 150px; height: 150px;" autoplay></lottie-player>
+    </div> -->
        
     <div class="custom-container">
         <div class="custom-row">
@@ -65,6 +83,7 @@
     <div class="inputContainerHolder">
         <div class="inputContainer">
             <p>Create Task </p>
+            <p>Save your tasks by logging in</p>
             <div class="form-group">
                 <input type="text" placeholder=" " id="newTaskInput" >
                 <label for="title">Title</label>
@@ -80,6 +99,7 @@
     <div class="loginContainerHolder">
         <div class="loginContainer">
             <p>Login</p>
+            <p>Enter your email and password</p>
             <div class="form-group">
                 <input type="text" placeholder=" " id="email">
                 <label for="email">Email</label>
@@ -105,6 +125,7 @@
     <div class="registerContainerHolder">
         <div class="registerContainer">
             <p>Register</p>
+            <p>Enter your email and password</p>
             <div class="form-group">
                 <input type="text" placeholder=" " id="emailReg" required>
                 <label for="emailReg">Email</label>
@@ -149,9 +170,21 @@
             <p style="color: white;">Registering...</p>
           </div>
     </div>
-    <footer>
-        <p><a href="https://www.desotobitsandbytes.net" target="_blank">Coded with ❤️ by Desoto Bits & Bytes</a></p>
+
+
+    <footer id="footer">
+        <div class="version">Version 1.0.0</div>
+
+        
+        <div>
+            <p>This app is a fun project I was working on and I thought it was worth sharing. I'll be adding more features also. This service is free for <strong>life</strong>.  If you find value in this application, you can leave me a tip.</p>
+            <a id="venmoCode" href="https://account.venmo.com/u/desotobitsandbytes" target="_blank"><img src="./venmo.png" height="200" width="200" alt="venmo"></a>
+        </div>
+                <p style="text-align: center; padding: 25px;"><a href="https://www.desotobitsandbytes.net" target="_blank">Coded with ❤️ by Desoto Bits & Bytes</a></p>
+
     </footer>
+
+
 </body>
 <script>
     const taskContainer = document.querySelector('.inputContainerHolder');
@@ -160,8 +193,34 @@
         taskContainer.style.display = 'grid';
         }
 
+    
+
+        document.addEventListener('click', function(event) {
+        var menu = document.querySelector('.menu');
+        var menuList = menu.querySelector('.menu__list');
+        var menuBtn = menu.querySelector('.menu__btn');
+
+        // Check if the clicked element is outside the menu and its button
+        if (!menu.contains(event.target) && event.target !== menuBtn) {
+            menuList.classList.remove('active');
+        }
+    });
+
 
     document.addEventListener('DOMContentLoaded', (event) => {
+
+     
+
+
+      
+
+        const menuItems = document.querySelectorAll('.menu ul li');
+        menuItems.forEach((item) => {
+            var menuList = document.querySelector('.menu__list');
+            item.addEventListener('click', () => {
+                menuList.classList.toggle('active')
+            })
+        })
 
         
         
@@ -209,7 +268,13 @@
             const regContainer = document.querySelector('.registerContainerHolder');
             regContainer.style.display = 'none';
         })
+        
     });
+
+    function toggleMenu() {
+        var menuList = document.querySelector('.menu__list');
+    menuList.classList.toggle('active');
+    }
 
   
 </script>
@@ -246,17 +311,58 @@
     const activityIndicator = document.querySelector('.activityIndicator');
 
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // document.querySelector('.floppyDisk').style.display = 'block';
-            document.querySelector('.userLoggedIn').style.display = 'block';
-            document.querySelector('.userLoggedOut').style.display = 'none';
-        } else {
-            document.querySelector('.userLoggedOut').style.display = 'block';
-            document.querySelector('.userLoggedIn').style.display = 'none';
-            // document.querySelector('.floppyDisk').style.display = 'none';
+    var userLoggedInElements = document.querySelectorAll('.userLoggedIn');
+    var userLoggedOutElements = document.querySelectorAll('.userLoggedOut');
 
+    if (user) {
+        userLoggedInElements.forEach(element => {
+            element.style.display = 'block';
+        });
+        userLoggedOutElements.forEach(element => {
+            element.style.display = 'none';
+        });
+        // var body = document.querySelector('body');
+        // let userEmail =  document.createElement('p');
+        // userEmail.classList.add('userEmail');
+        // userEmail.innerHTML = user.email;
+        // body.appendChild(userEmail);
+        
+    } else {
+     
+        userLoggedOutElements.forEach(element => {
+            element.style.display = 'block';
+        });
+        userLoggedInElements.forEach(element => {
+            element.style.display = 'none';
+        });
+       
+    }
+});
+
+    window.goToAbout = function () {
+        document.getElementById('footer').scrollIntoView({behavior:"smooth"})
+    }
+
+    window.desktopApp = function() {
+        Swal.fire({
+        title: "This application works best on a Desktop.",
+        showClass: {
+            popup: `
+            animate__animated
+            animate__fadeInUp
+            animate__faster
+            `
+        },
+        hideClass: {
+            popup: `
+            animate__animated
+            animate__fadeOutDown
+            animate__faster
+            `
         }
-    });
+        });
+    }
+
 
     window.populateTasks = function (tasks) {
         const todoList = document.getElementById("todoList");
@@ -345,8 +451,20 @@
             document.querySelector('.loginContainerHolder').style.display = 'none';
             // document.querySelector('.userLoggedOut').style.display = 'none';
             // document.querySelector('.userLoggedIn').style.display = 'block';
+            const email = user.email
+            function removeAt () {
+                const atIndex = email.indexOf('@');
+    
+            // If '@' symbol exists in the email
+            if (atIndex !== -1) {
+                // Extract the part before '@'
+                const emailWithoutDomain = email.substring(0, atIndex);
+                return emailWithoutDomain;
+            }
+            }
+            const userEmail = removeAt(email)
             Swal.fire({
-            title: `Welcome ${user.email}`,
+            title: `Welcome ${userEmail}`,
             showClass: {
                 popup: `
                 animate__animated
@@ -463,11 +581,19 @@
 }
 
 
+    window.userSavingTasks = async function () {
+        //
+        await retrieveDataFromLists();
+    }
+
+
 
 
     window.logOutUser = async function() {
 
-        await retrieveDataFromLists();
+        
+
+        // await retrieveDataFromLists();
         
         signOut(auth).then(() => {
             retrievedTaskArray = [];
@@ -717,8 +843,11 @@ window.addTask = function() {
 };
 
 window.removeTask = function(task) {
+    console.log(task)
+    let newTask = document.getElementById(task);
+    let title = newTask.getAttribute('data-task-text')
     Swal.fire({
-    title: "Delete Task?",
+    title: `Delete ${title} task?`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
@@ -787,7 +916,27 @@ window.createTaskElement = function(taskText, description) {
 
 
 window.saveUserTasks = async function () {
+    document.querySelector('activityIndicator').style.display = 'grid';
     retrieveDataFromLists();
+    document.querySelector('activityIndicator').style.display = 'none';
+    Swal.fire({
+    title: "Tasks Saved",
+    icon: "success",
+    showClass: {
+    popup: `
+      animate__animated
+      animate__fadeInUp
+      animate__faster
+    `
+  },
+  hideClass: {
+    popup: `
+      animate__animated
+      animate__fadeOutDown
+      animate__faster
+    `
+  }
+    });
 }
 
 
@@ -889,7 +1038,9 @@ window.retrieveDataFromLists = async function() {
 };
 
 
-
+window.openRegisterModal = function () {
+    document.querySelector('.registerContainerHolder').style.display = 'grid';
+}
 
 
 
@@ -903,7 +1054,7 @@ window.login = function() {
 };
 
 window.authOption = function() {
-    const optionContainer = document.querySelector('.authOptionContainer');
+    const optionContainer = document.querySelector('.loginContainerHolder');
     optionContainer.style.display = 'grid';
 };
 
