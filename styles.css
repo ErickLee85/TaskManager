@@ -453,6 +453,7 @@ i {
     margin-bottom: 1rem;
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); /* Shadow-sm equivalent */
     transition: transform 200ms ease-in-out;
+    overflow: hidden;
 }
 
 .custom-card-body {
