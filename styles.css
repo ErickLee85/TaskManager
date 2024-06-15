@@ -40,6 +40,29 @@ button {
 
 }
 
+#signUpBtn {
+    outline: none;
+    padding-block: 5px;
+    padding-inline:15px;
+    background: transparent;
+    border: 1px solid rgb(97, 9, 240) ;
+    transition: 0.3s;
+    color: rgb(97, 9, 240) ;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 5px;
+    width: 100%;
+    transition: 400ms ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#signUpBtn:hover {
+background:rgb(97, 9, 240) ;
+color: white;
+}
+
 
 
 nav {
